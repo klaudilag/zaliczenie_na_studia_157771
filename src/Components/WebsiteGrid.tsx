@@ -1,19 +1,37 @@
 import * as React from 'react';
-import {styled} from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import ButtonBase from '@mui/material/ButtonBase';
-import {useEffect, useState} from "react";
+import Container from '@mui/material/Container';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
-export function WebsiteGrid() {
-    const Img = styled('img')({
-        margin: 'auto',
-        display: 'block',
-        maxWidth: '100%',
-        maxHeight: '100%',
-    });
+const Img = styled('img')({
+    margin: 'auto',
+    display: 'block',
+    maxWidth: '100%',
+    maxHeight: '100%',
+});
 
+interface Recipe {
+    label: string;
+    image: string;
+    cuisineType: string[];
+    calories: number;
+    totalWeight: number;
+}
+
+interface Hit {
+    recipe: Recipe;
+}
+
+interface RecordCardProps {
+    item: Hit;
+}
+
+const RecordCard: React.FC<RecordCardProps> = ({ item }) => {
     return (
         <Paper
             sx={{
@@ -27,36 +45,73 @@ export function WebsiteGrid() {
         >
             <Grid container spacing={2}>
                 <Grid item>
-                    <ButtonBase sx={{width: 128, height: 128}}>
-                        <Img alt="complex" src="/static/images/grid/complex.jpg"/>
+                    <ButtonBase sx={{ width: 128, height: 128 }}>
+                        <Img alt={item.recipe.label} src={item.recipe.image} />
                     </ButtonBase>
                 </Grid>
                 <Grid item xs={12} sm container>
                     <Grid item xs container direction="column" spacing={2}>
                         <Grid item xs>
                             <Typography gutterBottom variant="subtitle1" component="div">
-                                Standard license
+                                {item.recipe.label}
                             </Typography>
                             <Typography variant="body2" gutterBottom>
-                                Full resolution 1920x1080 • JPEG
+                                {item.recipe.cuisineType.join(', ')}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                                ID: 1030114
+                                Calories: {Math.round(item.recipe.calories)}
                             </Typography>
                         </Grid>
                         <Grid item>
-                            <Typography sx={{cursor: 'pointer'}} variant="body2">
+                            <Typography sx={{ cursor: 'pointer' }} variant="body2">
                                 Remove
                             </Typography>
                         </Grid>
                     </Grid>
                     <Grid item>
                         <Typography variant="subtitle1" component="div">
-                            $19.00
+                            {item.recipe.totalWeight.toFixed(2)} g
                         </Typography>
                     </Grid>
                 </Grid>
             </Grid>
         </Paper>
+    );
+}
+
+export const WebsiteGrid: React.FC = () => {
+    const [items, setItems] = useState<Hit[]>([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('https://api.edamam.com/search', {
+                    params: {
+                        q: 'chicken',
+                        app_id: '3cf73f54',
+                        app_key: 'ee93e6801015bc9c5d8cff7923501b79',
+                        from: 0,
+                        to: 9
+                    }
+                });
+                setItems(response.data.hits);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    return (
+        <Container>
+            <Grid container spacing={3}>
+                {items.map((item, index) => (
+                    <Grid item xs={12} sm={6} md={4} key={index}>
+                        <RecordCard item={item} />
+                    </Grid>
+                ))}
+            </Grid>
+        </Container>
     );
 }
