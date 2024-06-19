@@ -6,11 +6,12 @@ import {WebsiteGrid} from "./Components/WebsiteGrid";
 
 
 function App() {
+    const[searchString, setSearchString] = useState("")
   return (
       <>
         <Header/>
-        <SearchBar/>
-          <WebsiteGrid/>
+        <SearchBar setString={setSearchString}/>
+          <WebsiteGrid searchString={searchString}/>
       </>
   );
 }

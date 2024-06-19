@@ -30,6 +30,9 @@ interface Hit {
 interface RecordCardProps {
     item: Hit;
 }
+interface PassedStringProp {
+    searchString: string;
+}
 
 const RecordCard: React.FC<RecordCardProps> = ({ item }) => {
     return (
@@ -79,15 +82,20 @@ const RecordCard: React.FC<RecordCardProps> = ({ item }) => {
     );
 }
 
-export const WebsiteGrid: React.FC = () => {
+export const WebsiteGrid: React.FC<PassedStringProp> = ({searchString}) => {
     const [items, setItems] = useState<Hit[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
+
+            if (searchString === ""){
+                return;
+            }
+
             try {
                 const response = await axios.get('https://api.edamam.com/search', {
                     params: {
-                        q: 'chicken',
+                        q: searchString,
                         app_id: '3cf73f54',
                         app_key: 'ee93e6801015bc9c5d8cff7923501b79',
                         from: 0,
@@ -101,7 +109,7 @@ export const WebsiteGrid: React.FC = () => {
         };
 
         fetchData();
-    }, []);
+    }, [searchString]);
 
     return (
         <Container>
