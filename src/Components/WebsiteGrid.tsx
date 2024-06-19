@@ -65,11 +65,6 @@ const RecordCard: React.FC<RecordCardProps> = ({ item }) => {
                                 Calories: {Math.round(item.recipe.calories)}
                             </Typography>
                         </Grid>
-                        <Grid item>
-                            <Typography sx={{ cursor: 'pointer' }} variant="body2">
-                                Remove
-                            </Typography>
-                        </Grid>
                     </Grid>
                     <Grid item>
                         <Typography variant="subtitle1" component="div">
