@@ -12,6 +12,11 @@ export const SearchBar = ({ setString }) => {
     const handleSearch = () => {
         setString(searchText);
     };
+    const handleEnterPressing = (event) => {
+        if (event.key === 'Enter') {
+            handleSearch();
+        }
+    };
 
     return (
         <Box className = 'searchbox'>
@@ -19,6 +24,7 @@ export const SearchBar = ({ setString }) => {
                        fullWidth
                        value={searchText}
                        onChange={handleChange}
+                       onKeyDown={handleEnterPressing}
                         InputProps={{endAdornment: (<InputAdornment><IconButton onClick={handleSearch}><SearchOutlinedIcon/></IconButton></InputAdornment>),}}
             />
         </Box>
